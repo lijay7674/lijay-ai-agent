@@ -8,6 +8,7 @@ import org.springframework.ai.chat.client.advisor.api.CallAdvisor;
 import org.springframework.ai.chat.client.advisor.api.CallAdvisorChain;
 import org.springframework.ai.chat.client.advisor.api.StreamAdvisor;
 import org.springframework.ai.chat.client.advisor.api.StreamAdvisorChain;
+import org.springframework.ai.chat.messages.UserMessage;
 import reactor.core.publisher.Flux;
 
 /**
@@ -32,41 +33,13 @@ public class MyLoggerAdvisor implements CallAdvisor, StreamAdvisor {
     }
 
     protected void logRequest(ChatClientRequest request) {
-        try {
-            if (request != null) {
-                var instructions = request.prompt().getInstructions();
-                if (!instructions.isEmpty()) {
-                    // 获取最后一条用户输入（通常是最新的一条）
-                    String userMessage = instructions.getLast().getText();
-                    log.info("user: {}", userMessage);
-                } else {
-                    log.warn("请求指令为空");
-                }
-            } else {
-                log.warn("请求对象为空");
-            }
-        } catch (Exception e) {
-            log.error("记录请求日志失败", e);
-        }
+        UserMessage userMessage = request.prompt().getUserMessage();
+        log.info("user: {}", userMessage.getText());
+
     }
-    
+
     protected void logResponse(ChatClientResponse chatClientResponse) {
-        try {
-            if (chatClientResponse != null && chatClientResponse.chatResponse() != null) {
-                var results = chatClientResponse.chatResponse().getResults();
-                if (!results.isEmpty()) {
-                    var firstResult = results.getFirst();
-                    String responseText = firstResult.getOutput().getText();
-                    log.info("model: {}", responseText);
-                } else {
-                    log.warn("响应结果为空");
-                }
-            } else {
-                log.warn("响应对象为空");
-            }
-        } catch (Exception e) {
-            log.error("记录响应日志失败", e);
-        }
+        log.info("model: {}", chatClientResponse.chatResponse().getResult().getOutput().getText());
     }
     @Override
     public String getName() {
