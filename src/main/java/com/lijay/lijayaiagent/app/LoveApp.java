@@ -40,7 +40,6 @@ public class LoveApp {
 //                .build();
 
 
-
         chatClient = ChatClient.builder(dashscopeChatModel)
                 .defaultSystem(SYSTEM_PROMPT)
                 .defaultAdvisors(
