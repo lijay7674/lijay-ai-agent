@@ -23,7 +23,7 @@ public class ReReadingAdvisor implements CallAdvisor, StreamAdvisor {
      */
     private ChatClientRequest before(ChatClientRequest chatClientRequest) {
         String userText = chatClientRequest.prompt().getUserMessage().getText();
-        // 添加上下文参数
+        // 添加上下文参数，该次请求中都可以在chatClientRequest当中获取
         chatClientRequest.context().put("re2_input_query", userText);
         // 修改用户提示词
         String newUserText = """
