@@ -29,7 +29,12 @@ public class FileBasedChatMemory implements ChatMemory {
      * Kryo序列化器实例
      * 用于对象的序列化和反序列化操作
      */
-    private static final Kryo kryo = new Kryo();
+    private static final ThreadLocal<Kryo> KRYO = ThreadLocal.withInitial(() -> {
+        Kryo kryo = new Kryo();
+        kryo.setRegistrationRequired(false);
+        kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
+        return kryo;
+    });
 
     /**
      * 静态初始化块
@@ -38,11 +43,6 @@ public class FileBasedChatMemory implements ChatMemory {
      * - setRegistrationRequired(false): 允许序列化未注册的类
      * - setInstantiatorStrategy(): 设置对象实例化策略为标准策略
      */
-    static {
-        kryo.setRegistrationRequired(false);
-        // 设置实例化策略
-        kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
-    }
 
     /**
      * 构造函数
@@ -100,7 +100,7 @@ public class FileBasedChatMemory implements ChatMemory {
         List<Message> messages = new ArrayList<>();
         if (file.exists()) {
             try (Input input = new Input(new FileInputStream(file))) {
-                messages = kryo.readObject(input, ArrayList.class);
+                messages = KRYO.get().readObject(input, ArrayList.class);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -116,7 +116,7 @@ public class FileBasedChatMemory implements ChatMemory {
     private void saveConversation(String conversationId, List<Message> messages) {
         File file = getConversationFile(conversationId);
         try (Output output = new Output(new FileOutputStream(file))) {
-            kryo.writeObject(output, messages);
+            KRYO.get().writeObject(output, messages);
         } catch (IOException e) {
             e.printStackTrace();
         }

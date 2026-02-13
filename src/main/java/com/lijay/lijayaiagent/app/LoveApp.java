@@ -1,16 +1,14 @@
 package com.lijay.lijayaiagent.app;
 
 import com.lijay.lijayaiagent.advisor.MyLoggerAdvisor;
-import com.lijay.lijayaiagent.advisor.ReReadingAdvisor;
-import com.lijay.lijayaiagent.chatmemory.FileBasedChatMemory;
+import com.lijay.lijayaiagent.chatmemory.JdbcChatMemory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
-import org.springframework.ai.chat.memory.InMemoryChatMemoryRepository;
-import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
@@ -26,24 +24,25 @@ public class LoveApp {
             "围绕单身、恋爱、已婚三种状态提问：单身状态询问社交圈拓展及追求心仪对象的困扰；" +
             "恋爱状态询问沟通、习惯差异引发的矛盾；已婚状态询问家庭责任与亲属关系处理的问题。" +
             "引导用户详述事情经过、对方反应及自身想法，以便给出专属解决方案。";
-    /**
-     * Ai 初始化，Spring会自动执行构造方法，并将bean注入到该类中
-     */
-    public LoveApp(ChatModel dashscopeChatModel) {
-        //初始化一个基于文件的对话记忆
-        String fileDir = System.getProperty("user.dir") + "/tmp/file-based-chat-memory";
-        FileBasedChatMemory chatMemory = new FileBasedChatMemory(fileDir);
-        // 初始化基于内存的对话记忆
-//        MessageWindowChatMemory chatMemory = MessageWindowChatMemory.builder()
+
+
+    public LoveApp(ChatModel dashscopeChatModel, ChatMemory jdbcChatMemory) {
+        // 初始化基于MyBatis-Plus的JDBC对话记忆（推荐用于生产环境）
+
+        // 初始化基于文件的对话记忆（适合开发测试）
+//        String fileDir = System.getProperty("user.dir") + "/tmp/file-based-chat-memory";
+//        this.chatMemory = new FileBasedChatMemory(fileDir);
+
+        // 初始化基于内存的对话记忆（简单快速，但重启后数据丢失）
+//        this.chatMemory = MessageWindowChatMemory.builder()
 //                .chatMemoryRepository(new InMemoryChatMemoryRepository())
 //                .maxMessages(10)
 //                .build();
 
-
         chatClient = ChatClient.builder(dashscopeChatModel)
                 .defaultSystem(SYSTEM_PROMPT)
                 .defaultAdvisors(
-                        MessageChatMemoryAdvisor.builder(chatMemory).build(),
+                        MessageChatMemoryAdvisor.builder(jdbcChatMemory).build(),  // 使用实例变量
                         // 自定义日志 Advisor，输出简答对话
                         new MyLoggerAdvisor()
                         // 自定义推理增强 Advisor，可按需开启
