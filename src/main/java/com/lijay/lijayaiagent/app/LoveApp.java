@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.memory.InMemoryChatMemoryRepository;
+import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,23 +28,23 @@ public class LoveApp {
             "引导用户详述事情经过、对方反应及自身想法，以便给出专属解决方案。";
 
 
-    public LoveApp(ChatModel dashscopeChatModel, ChatMemory jdbcChatMemory) {
+    public LoveApp(ChatModel dashscopeChatModel) {
         // 初始化基于MyBatis-Plus的JDBC对话记忆（推荐用于生产环境）
 
         // 初始化基于文件的对话记忆（适合开发测试）
 //        String fileDir = System.getProperty("user.dir") + "/tmp/file-based-chat-memory";
-//        this.chatMemory = new FileBasedChatMemory(fileDir);
+//        chatMemory = new FileBasedChatMemory(fileDir);
 
         // 初始化基于内存的对话记忆（简单快速，但重启后数据丢失）
-//        this.chatMemory = MessageWindowChatMemory.builder()
-//                .chatMemoryRepository(new InMemoryChatMemoryRepository())
-//                .maxMessages(10)
-//                .build();
+        ChatMemory chatMemory = MessageWindowChatMemory.builder()
+                .chatMemoryRepository(new InMemoryChatMemoryRepository())
+                .maxMessages(10)
+                .build();
 
         chatClient = ChatClient.builder(dashscopeChatModel)
                 .defaultSystem(SYSTEM_PROMPT)
                 .defaultAdvisors(
-                        MessageChatMemoryAdvisor.builder(jdbcChatMemory).build(),  // 使用实例变量
+                        MessageChatMemoryAdvisor.builder(chatMemory).build(),  // 使用实例变量
                         // 自定义日志 Advisor，输出简答对话
                         new MyLoggerAdvisor()
                         // 自定义推理增强 Advisor，可按需开启
