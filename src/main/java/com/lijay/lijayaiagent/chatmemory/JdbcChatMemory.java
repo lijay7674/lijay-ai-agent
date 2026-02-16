@@ -60,6 +60,7 @@ public class JdbcChatMemory implements ChatMemory {
             ChatMemoryMessage entity = new ChatMemoryMessage();
             entity.setConversationId(conversationId);
             entity.setMessageBytes(serializeMessage(message));
+            entity.setRole(message.getMessageType().toString());
             chatMemoryMessageMapper.insert(entity);
         }
     }

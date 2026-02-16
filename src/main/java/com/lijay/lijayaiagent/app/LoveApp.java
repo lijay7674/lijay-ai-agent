@@ -1,7 +1,6 @@
 package com.lijay.lijayaiagent.app;
 
 import com.lijay.lijayaiagent.advisor.MyLoggerAdvisor;
-import com.lijay.lijayaiagent.chatmemory.JdbcChatMemory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
@@ -28,7 +27,7 @@ public class LoveApp {
             "引导用户详述事情经过、对方反应及自身想法，以便给出专属解决方案。";
 
 
-    public LoveApp(ChatModel dashscopeChatModel) {
+    public LoveApp(ChatModel dashscopeChatModel, ChatMemory jdbcChatMemory) {
         // 初始化基于MyBatis-Plus的JDBC对话记忆（推荐用于生产环境）
 
         // 初始化基于文件的对话记忆（适合开发测试）
@@ -36,15 +35,16 @@ public class LoveApp {
 //        chatMemory = new FileBasedChatMemory(fileDir);
 
         // 初始化基于内存的对话记忆（简单快速，但重启后数据丢失）
-        ChatMemory chatMemory = MessageWindowChatMemory.builder()
-                .chatMemoryRepository(new InMemoryChatMemoryRepository())
-                .maxMessages(10)
-                .build();
+//        ChatMemory chatMemory = MessageWindowChatMemory.builder()
+//                .chatMemoryRepository(new InMemoryChatMemoryRepository())
+//                .maxMessages(10)
+//                .build();
 
         chatClient = ChatClient.builder(dashscopeChatModel)
                 .defaultSystem(SYSTEM_PROMPT)
                 .defaultAdvisors(
-                        MessageChatMemoryAdvisor.builder(chatMemory).build(),  // 使用实例变量
+                        // 使用实例变量
+                        MessageChatMemoryAdvisor.builder(jdbcChatMemory).build(),
                         // 自定义日志 Advisor，输出简答对话
                         new MyLoggerAdvisor()
                         // 自定义推理增强 Advisor，可按需开启
