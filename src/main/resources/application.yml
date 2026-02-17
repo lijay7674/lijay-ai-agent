@@ -3,6 +3,12 @@ spring:
     name: lijay-ai-agent
   profiles:
     active: local
+  ai:
+    dashscope:
+      # 阿里云DashScope API配置
+      base-url: https://dashscope.aliyuncs.com/api/v1
+      # API Key：优先从环境变量DASHSCOPE_API_KEY读取，也可在此配置
+      # api-key: sk-your-api-key-here
 server:
   port: 8123
   servlet:
@@ -26,8 +32,8 @@ knife4j:
     language: zh_cn
 # MyBatis-Plus配置
 mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # SQL日志输出
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # SQL日志输出
   global-config:
     db-config:
       id-type: auto  # 主键策略
