@@ -6,7 +6,8 @@ spring:
   ai:
     dashscope:
       # 阿里云DashScope API配置
-      base-url: https://dashscope.aliyuncs.com/api/v1
+      # 注意：不要配置 base-url，使用默认值，否则可能导致嵌入模型 API 端点不匹配
+      # base-url: https://dashscope.aliyuncs.com/api/v1
       # API Key：优先从环境变量DASHSCOPE_API_KEY读取，也可在此配置
       # api-key: sk-your-api-key-here
 server:

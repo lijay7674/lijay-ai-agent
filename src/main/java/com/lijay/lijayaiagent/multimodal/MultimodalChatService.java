@@ -45,7 +45,7 @@ public class MultimodalChatService {
     private String apiKey;
 
     @Autowired
-    private ChatMemory chatMemory;
+    private ChatMemory chatMemory; // 当前项目默认注入JdbcChatMemory
 
     private MultiModalConversation multiModalConversation;
 
