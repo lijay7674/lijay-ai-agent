@@ -35,7 +35,6 @@ public class MyLoggerAdvisor implements CallAdvisor, StreamAdvisor {
     protected void logRequest(ChatClientRequest request) {
         UserMessage userMessage = request.prompt().getUserMessage();
         log.info("user: {}", userMessage.getText());
-
     }
 
     protected void logResponse(ChatClientResponse chatClientResponse) {

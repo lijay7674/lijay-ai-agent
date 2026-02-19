@@ -34,9 +34,9 @@ public class AppVectorStoreConfig {
         try {
             List<Document> documents = appDocumentLoader.loadMarkdown();
             if (!documents.isEmpty()) {
-                log.info("开始加载文档到向量存储，文档数量: {}", documents.size());
+//                log.info("开始加载文档到向量存储，文档数量: {}", documents.size());
                 simpleVectorStore.doAdd(documents);
-                log.info("文档加载完成");
+//                log.info("文档加载完成");
             } else {
                 log.warn("未找到任何文档，向量存储为空");
             }

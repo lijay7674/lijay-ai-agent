@@ -41,8 +41,11 @@ public class LoveApp {
     @Autowired
     private VectorStore appVectorStore;
 
+    @Autowired
+    private Advisor appRagCloudAdvisor;
 
-    public LoveApp(ChatModel dashscopeChatModel, MultimodalChatService multimodalChatService) {
+
+    public LoveApp(ChatModel dashscopeChatModel, MultimodalChatService multimodalChatService, ChatMemory chatMemory) {
         // 初始化基于MyBatis-Plus的JDBC对话记忆（推荐用于生产环境）
 
         // 初始化基于文件的对话记忆（适合开发测试）
@@ -50,10 +53,10 @@ public class LoveApp {
 //        chatMemory = new FileBasedChatMemory(fileDir);
 
         // 初始化基于内存的对话记忆（简单快速，但重启后数据丢失）
-        ChatMemory chatMemory = MessageWindowChatMemory.builder()
-                .chatMemoryRepository(new InMemoryChatMemoryRepository())
-                .maxMessages(10)
-                .build();
+//        ChatMemory chatMemory = MessageWindowChatMemory.builder()
+//                .chatMemoryRepository(new InMemoryChatMemoryRepository())
+//                .maxMessages(10)
+//                .build();
 
         chatClient = ChatClient.builder(dashscopeChatModel)
                 .defaultSystem(SYSTEM_PROMPT)
@@ -190,11 +193,18 @@ public class LoveApp {
         return doMultimodalChatStream(text, null, chatId);
     }
 
+    /**
+     * 根据本地RAG知识库回答
+     * @param message
+     * @param chatId
+     * @return
+     */
+
     public String doChatWithRag(String message, String chatId) {
-        // 构建 RAG Advisor
+        // 构建 RAG Advisor(检索增强顾问)
         Advisor retrievalAugmentationAdvisor = RetrievalAugmentationAdvisor.builder()
                 .documentRetriever(VectorStoreDocumentRetriever.builder()
-                        .similarityThreshold(0.50)
+                        .similarityThreshold(0.30)
                         .vectorStore(appVectorStore)
                         .build())
                 .build();
@@ -204,6 +214,31 @@ public class LoveApp {
                 .user(message)
                 .advisors(spec -> spec.param(ChatMemory.CONVERSATION_ID, chatId))
                 .advisors(retrievalAugmentationAdvisor)
+                .call()
+                .content();
+    }
+
+    /**
+     * 根据云知识库RAG回答
+     * @param message
+     * @param chatId
+     * @return
+     */
+
+    public String doChatWithCloudRag(String message, String chatId) {
+        // 构建 RAG Advisor(检索增强顾问)
+        Advisor retrievalAugmentationAdvisor = RetrievalAugmentationAdvisor.builder()
+                .documentRetriever(VectorStoreDocumentRetriever.builder()
+                        .similarityThreshold(0.30)
+                        .vectorStore(appVectorStore)
+                        .build())
+                .build();
+
+        return chatClient
+                .prompt()
+                .user(message)
+                .advisors(spec -> spec.param(ChatMemory.CONVERSATION_ID, chatId))
+                .advisors(appRagCloudAdvisor)
                 .call()
                 .content();
     }
