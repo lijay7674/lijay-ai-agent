@@ -3,9 +3,7 @@ package com.lijay.lijayaiagent.rag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.reader.markdown.MarkdownDocumentReader;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Component;
 import org.springframework.ai.reader.markdown.config.MarkdownDocumentReaderConfig;
@@ -25,7 +23,6 @@ public class AppDocumentLoader {
 
     /**
      * 加载多篇markdown文件
-     * @return
      */
     public List<Document> loadMarkdown() {
         List<Document> allDocuments = new ArrayList<>();

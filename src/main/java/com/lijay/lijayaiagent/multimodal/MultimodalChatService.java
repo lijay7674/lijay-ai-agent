@@ -9,7 +9,6 @@ import com.alibaba.dashscope.exception.ApiException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.alibaba.dashscope.exception.UploadFileException;
 import com.alibaba.dashscope.utils.Constants;
-import com.lijay.lijayaiagent.chatmemory.JdbcChatMemory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.AssistantMessage;
@@ -27,7 +26,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 多模态对话服务
@@ -45,7 +43,8 @@ public class MultimodalChatService {
     private String apiKey;
 
     @Autowired
-    private ChatMemory chatMemory; // 当前项目默认注入JdbcChatMemory
+    // 当前项目默认注入JdbcChatMemory
+    private ChatMemory chatMemory;
 
     private MultiModalConversation multiModalConversation;
 

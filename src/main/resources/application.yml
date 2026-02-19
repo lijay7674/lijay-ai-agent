@@ -3,8 +3,6 @@ spring:
     name: lijay-ai-agent
   profiles:
     active: local
-  ai:
-    dashscope:
       # 阿里云DashScope API配置
       # 注意：不要配置 base-url，使用默认值，否则可能导致嵌入模型 API 端点不匹配
       # base-url: https://dashscope.aliyuncs.com/api/v1

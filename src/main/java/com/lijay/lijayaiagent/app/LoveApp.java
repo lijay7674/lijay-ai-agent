@@ -3,17 +3,13 @@ package com.lijay.lijayaiagent.app;
 import com.lijay.lijayaiagent.advisor.MyLoggerAdvisor;
 import com.lijay.lijayaiagent.multimodal.MultimodalChatRequest;
 import com.lijay.lijayaiagent.multimodal.MultimodalChatService;
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.memory.ChatMemory;
-import org.springframework.ai.chat.memory.InMemoryChatMemoryRepository;
-import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
-import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -83,11 +79,10 @@ public class LoveApp {
                 .advisors(spec -> spec.param(ChatMemory.CONVERSATION_ID, chatId))
                 .call()
                 .chatResponse();
-        String content = chatResponse.getResult().getOutput().getText();
 
         // 更详细的调试信息
 //        log.info("[DashScope] 响应内容：{}", content);
-        return content;
+        return chatResponse.getResult().getOutput().getText();
     }
 
     /**
@@ -195,9 +190,6 @@ public class LoveApp {
 
     /**
      * 根据本地RAG知识库回答
-     * @param message
-     * @param chatId
-     * @return
      */
 
     public String doChatWithRag(String message, String chatId) {
@@ -220,20 +212,11 @@ public class LoveApp {
 
     /**
      * 根据云知识库RAG回答
-     * @param message
-     * @param chatId
+
      * @return
      */
 
     public String doChatWithCloudRag(String message, String chatId) {
-        // 构建 RAG Advisor(检索增强顾问)
-        Advisor retrievalAugmentationAdvisor = RetrievalAugmentationAdvisor.builder()
-                .documentRetriever(VectorStoreDocumentRetriever.builder()
-                        .similarityThreshold(0.30)
-                        .vectorStore(appVectorStore)
-                        .build())
-                .build();
-
         return chatClient
                 .prompt()
                 .user(message)
