@@ -93,12 +93,30 @@
             <artifactId>spring-ai-markdown-document-reader</artifactId>
             <version>1.1.2</version>
         </dependency>
-        <!--Spring Ai pg向量存储-->
+        <!--Spring Ai pg向量存储， 手动注入-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-vector-store-pgvector</artifactId>
+            <artifactId>spring-ai-pgvector-store</artifactId>
             <version>1.1.2</version>
         </dependency>
+
+
+        <!--        &lt;!&ndash;Spring Ai pg向量存储， 自动注入&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.ai</groupId>-->
+<!--            <artifactId>spring-ai-starter-vector-store-pgvector</artifactId>-->
+<!--            <version>1.1.2</version>-->
+<!--        </dependency>-->
+
 
         <!-- DashScope ChatModel 支持（如果使用其他模型，请跳转 Spring AI 文档选择对应的 starter） -->
         <dependency>
