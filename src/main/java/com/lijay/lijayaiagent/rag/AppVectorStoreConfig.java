@@ -30,22 +30,16 @@ public class AppVectorStoreConfig {
     @Lazy
     VectorStore appVectorStore(EmbeddingModel dashscopeEmbeddingModel) {
         SimpleVectorStore simpleVectorStore = SimpleVectorStore.builder(dashscopeEmbeddingModel).build();
-        
+
         try {
             List<Document> documents = appDocumentLoader.loadMarkdown();
-            if (!documents.isEmpty()) {
-//                log.info("开始加载文档到向量存储，文档数量: {}", documents.size());
-                simpleVectorStore.doAdd(documents);
-//                log.info("文档加载完成");
-            } else {
-                log.warn("未找到任何文档，向量存储为空");
-            }
+            simpleVectorStore.doAdd(documents);
         } catch (Exception e) {
             // 嵌入服务不可用时，返回空的向量存储，RAG 功能暂时不可用
             log.warn("向量存储初始化失败，RAG 功能暂时不可用: {}", e.getMessage());
             log.debug("详细错误信息:", e);
         }
-        
+
         return simpleVectorStore;
     }
 
