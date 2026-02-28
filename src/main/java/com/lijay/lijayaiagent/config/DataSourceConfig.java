@@ -1,10 +1,12 @@
 package com.lijay.lijayaiagent.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 
@@ -54,5 +56,23 @@ public class DataSourceConfig {
         return vectorDataSourceProperties()
                 .initializeDataSourceBuilder()
                 .build();
+    }
+
+
+    /**
+     * MySQL 主数据源的 JdbcTemplate - 用于业务数据查询
+     */
+    @Bean
+    @Primary
+    public JdbcTemplate primaryJdbcTemplate(@Qualifier("dataSource") DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
+    }
+
+    /**
+     * PostgreSQL 向量存储数据源的 JdbcTemplate - 用于 pgvector
+     */
+    @Bean
+    public JdbcTemplate vectorJdbcTemplate(@Qualifier("vectorDataSource") DataSource vectorDataSource) {
+        return new JdbcTemplate(vectorDataSource);
     }
 }
