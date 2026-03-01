@@ -40,6 +40,9 @@ public class LoveApp {
     @Autowired
     private Advisor appRagCloudAdvisor;
 
+    @Autowired
+    private VectorStore pgVectorVectorStore;
+
 
     public LoveApp(ChatModel dashscopeChatModel, MultimodalChatService multimodalChatService, ChatMemory chatMemory) {
         // 初始化基于MyBatis-Plus的JDBC对话记忆（推荐用于生产环境）
@@ -194,10 +197,18 @@ public class LoveApp {
 
     public String doChatWithRag(String message, String chatId) {
         // 构建 RAG Advisor(检索增强顾问)
+        //appVectorStore 基于本地内存的vector
+//        Advisor retrievalAugmentationAdvisor = RetrievalAugmentationAdvisor.builder()
+//                .documentRetriever(VectorStoreDocumentRetriever.builder()
+//                        .similarityThreshold(0.30)
+//                        .vectorStore(appVectorStore)
+//                        .build())
+//                .build();
+        // 基于pgVectorStore的RAG
         Advisor retrievalAugmentationAdvisor = RetrievalAugmentationAdvisor.builder()
                 .documentRetriever(VectorStoreDocumentRetriever.builder()
                         .similarityThreshold(0.30)
-                        .vectorStore(appVectorStore)
+                        .vectorStore(pgVectorVectorStore)
                         .build())
                 .build();
 
@@ -212,7 +223,6 @@ public class LoveApp {
 
     /**
      * 根据云知识库RAG回答
-
      * @return
      */
 
