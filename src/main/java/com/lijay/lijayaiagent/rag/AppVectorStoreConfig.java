@@ -6,6 +6,7 @@ import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -21,25 +22,19 @@ public class AppVectorStoreConfig {
     @Resource
     private AppDocumentLoader appDocumentLoader;
 
+    @Autowired
+    private MyKeywordEnricher myKeywordEnricher;
     /**
      * 创建向量存储 Bean
-     * 使用 @Lazy 延迟初始化，避免启动时立即调用嵌入服务
      * 如果嵌入服务不可用，返回空的向量存储，应用仍可正常启动
      */
     @Bean
-    @Lazy
     VectorStore appVectorStore(EmbeddingModel dashscopeEmbeddingModel) {
         SimpleVectorStore simpleVectorStore = SimpleVectorStore.builder(dashscopeEmbeddingModel).build();
 
-        try {
-            List<Document> documents = appDocumentLoader.loadMarkdown();
-            simpleVectorStore.doAdd(documents);
-        } catch (Exception e) {
-            // 嵌入服务不可用时，返回空的向量存储，RAG 功能暂时不可用
-            log.warn("向量存储初始化失败，RAG 功能暂时不可用: {}", e.getMessage());
-            log.debug("详细错误信息:", e);
-        }
-
+        List<Document> documents = appDocumentLoader.loadMarkdown();
+        List<Document> enrichDocuments = myKeywordEnricher.enrich(documents);
+        simpleVectorStore.doAdd(enrichDocuments);
         return simpleVectorStore;
     }
 

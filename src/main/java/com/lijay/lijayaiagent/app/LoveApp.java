@@ -198,19 +198,19 @@ public class LoveApp {
     public String doChatWithRag(String message, String chatId) {
         // 构建 RAG Advisor(检索增强顾问)
         //appVectorStore 基于本地内存的vector
-//        Advisor retrievalAugmentationAdvisor = RetrievalAugmentationAdvisor.builder()
-//                .documentRetriever(VectorStoreDocumentRetriever.builder()
-//                        .similarityThreshold(0.30)
-//                        .vectorStore(appVectorStore)
-//                        .build())
-//                .build();
-        // 基于pgVectorStore的RAG
         Advisor retrievalAugmentationAdvisor = RetrievalAugmentationAdvisor.builder()
                 .documentRetriever(VectorStoreDocumentRetriever.builder()
                         .similarityThreshold(0.30)
-                        .vectorStore(pgVectorVectorStore)
+                        .vectorStore(appVectorStore)
                         .build())
                 .build();
+        // 基于pgVectorStore的RAG
+//        Advisor retrievalAugmentationAdvisor = RetrievalAugmentationAdvisor.builder()
+//                .documentRetriever(VectorStoreDocumentRetriever.builder()
+//                        .similarityThreshold(0.30)
+//                        .vectorStore(pgVectorVectorStore)
+//                        .build())
+//                .build();
 
         return chatClient
                 .prompt()
