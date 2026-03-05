@@ -3,6 +3,7 @@ package com.lijay.lijayaiagent.app;
 import com.lijay.lijayaiagent.advisor.MyLoggerAdvisor;
 import com.lijay.lijayaiagent.multimodal.MultimodalChatRequest;
 import com.lijay.lijayaiagent.multimodal.MultimodalChatService;
+import com.lijay.lijayaiagent.rag.QueryRewriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
@@ -40,8 +41,11 @@ public class LoveApp {
     @Autowired
     private Advisor appRagCloudAdvisor;
 
+//    @Autowired
+//    private VectorStore pgVectorVectorStore;
+
     @Autowired
-    private VectorStore pgVectorVectorStore;
+    private QueryRewriter queryRewriter;
 
 
     public LoveApp(ChatModel dashscopeChatModel, MultimodalChatService multimodalChatService, ChatMemory chatMemory) {

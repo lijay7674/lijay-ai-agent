@@ -17,17 +17,17 @@ public class PgVectorVectorStoreConfig {
     @Autowired
     private AppDocumentLoader appDocumentLoader;
 
-    @Bean
-    public VectorStore pgVectorVectorStore(@Qualifier("vectorJdbcTemplate") JdbcTemplate vectorJdbcTemplate, EmbeddingModel dashscopeEmbeddingModel) {
-        VectorStore vectorStore = PgVectorStore.builder(vectorJdbcTemplate, dashscopeEmbeddingModel)
-                .dimensions(1024)                    // Optional: defaults to model dimensions or 1536
-                .distanceType(COSINE_DISTANCE)       // Optional: defaults to COSINE_DISTANCE
-                .indexType(HNSW)                     // Optional: defaults to HNSW
-                .initializeSchema(true)              // Optional: defaults to false
-                .schemaName("public")                // Optional: defaults to "public"
-                .vectorTableName("vector_store")     // Optional: defaults to "vector_store"
-                .maxDocumentBatchSize(10000)         // Optional: defaults to 10000
-                .build();
-        return vectorStore;
-    }
+//    @Bean
+//    public VectorStore pgVectorVectorStore(@Qualifier("vectorJdbcTemplate") JdbcTemplate vectorJdbcTemplate, EmbeddingModel dashscopeEmbeddingModel) {
+//        VectorStore vectorStore = PgVectorStore.builder(vectorJdbcTemplate, dashscopeEmbeddingModel)
+//                .dimensions(1024)                    // Optional: defaults to model dimensions or 1536
+//                .distanceType(COSINE_DISTANCE)       // Optional: defaults to COSINE_DISTANCE
+//                .indexType(HNSW)                     // Optional: defaults to HNSW
+//                .initializeSchema(true)              // Optional: defaults to false
+//                .schemaName("public")                // Optional: defaults to "public"
+//                .vectorTableName("vector_store")     // Optional: defaults to "vector_store"
+//                .maxDocumentBatchSize(10000)         // Optional: defaults to 10000
+//                .build();
+//        return vectorStore;
+//    }
 }
