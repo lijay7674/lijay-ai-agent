@@ -9,7 +9,7 @@ import org.springframework.ai.tool.annotation.ToolParam;
  * 文件操作工具类(提供文件读写功能)
  */
 public class FileOperationTool {
-    private final String FILE_DIR = FileConstant.FILE_SDA_PATH + "/file";
+    private final String FILE_DIR = FileConstant.FILE_SAVE_DIR + "/file";
 
     @Tool(description = "Read content from a file")
     public String readFile(@ToolParam(description = "Name of a file to read") String filename){

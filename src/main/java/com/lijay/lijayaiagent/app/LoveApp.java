@@ -13,6 +13,7 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
+import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -240,4 +241,22 @@ public class LoveApp {
                 .content();
     }
 
+    //工具集合
+    @Autowired
+    private ToolCallback[] allTools;
+    /**
+     * Ai 调用工具功能(支持调用工具)
+     */
+    public String doChatWithTools(String message, String chatId) {
+        // 同步阻塞调用
+        String content = chatClient
+                .prompt()
+                .user(message)
+                .advisors(spec -> spec.param(ChatMemory.CONVERSATION_ID, chatId))
+                .toolCallbacks(allTools)
+                .call()
+                .content();
+
+        return content;
+    }
 }

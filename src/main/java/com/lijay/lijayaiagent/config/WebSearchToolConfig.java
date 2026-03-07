@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 public class WebSearchToolConfig {
 
-    @Value("${searchapi.api-key}")
+    @Value("${search-api.api-key}")
     private String apiKey;
 
     /**
