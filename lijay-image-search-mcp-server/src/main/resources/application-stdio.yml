@@ -1,0 +1,11 @@
+spring:
+  ai:
+    mcp:
+      server:
+        name: lijay-image-search-mcp-server
+        version: 1.0.0
+        # STDIO 模式不需要 protocol 配置，通过 stdio: true 启用
+        stdio: true
+  main:
+    web-application-type: none
+    banner-mode: off

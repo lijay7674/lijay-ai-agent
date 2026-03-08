@@ -8,10 +8,18 @@ spring:
       # base-url: https://dashscope.aliyuncs.com/api/v1
       # API Key：优先从环境变量DASHSCOPE_API_KEY读取，也可在此配置
       # api-key: sk-your-api-key-here
+  ai:
+    mcp:
+      client:
+        stdio:
+          servers-configuration: classpath:mcp-servers.json
+
 server:
   port: 8123
   servlet:
     context-path: /api
+# 关闭自动配置条件评估报告
+debug: false
 # springdoc-openapi 接口文档配置
 springdoc:
   swagger-ui:

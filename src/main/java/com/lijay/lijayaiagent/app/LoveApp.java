@@ -14,6 +14,7 @@ import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.tool.ToolCallback;
+import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -47,6 +48,10 @@ public class LoveApp {
 
     @Autowired
     private QueryRewriter queryRewriter;
+
+    // AI 调用MCP服务
+    @Autowired
+    ToolCallbackProvider toolCallbackProvider;
 
 
     public LoveApp(ChatModel dashscopeChatModel, MultimodalChatService multimodalChatService, ChatMemory chatMemory) {
@@ -254,6 +259,20 @@ public class LoveApp {
                 .user(message)
                 .advisors(spec -> spec.param(ChatMemory.CONVERSATION_ID, chatId))
                 .toolCallbacks(allTools)
+                .call()
+                .content();
+
+        return content;
+    }
+
+
+    public String doChatWithMcp(String message, String chatId) {
+        // 同步阻塞调用
+        String content = chatClient
+                .prompt()
+                .user(message)
+                .advisors(spec -> spec.param(ChatMemory.CONVERSATION_ID, chatId))
+                .toolCallbacks(toolCallbackProvider)
                 .call()
                 .content();
 
